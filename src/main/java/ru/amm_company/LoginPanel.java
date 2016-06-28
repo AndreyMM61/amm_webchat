@@ -15,59 +15,67 @@
  */
 package ru.amm_company;
 
+import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import ru.amm_company.pages.ChatPage;
+import ru.amm_company.panels.TemplatePage;
 
 /**
  *
  * @author mam
  */
 public class LoginPanel extends Panel {
-	public LoginPanel(String id) {
+        private static final long serialVersionUID = 1L;
+        LoginForm loginForm;
+
+        @Override
+        protected void onConfigure() {
+                super.onConfigure();
+
+                final SessionChat session = SessionChat.get();
+                String username = session.getUsername();
+                if (username != null) {
+                    throw new RestartResponseAtInterceptPageException(ChatPage.class);
+                }
+        }
+
+        public LoginPanel(String id) {
 		super(id);		
 		init();
 	}
-    
 	
-	private void init(){
-		Form loginForm = new LoginForm("loginForm");
+	private void init() {
+		loginForm = new LoginForm("loginForm");
 		add(loginForm);
 	}
 	
-	public class LoginForm extends Form{
-		private String username;
-		private String password;
-		private String loginStatus;
-                
-                private Label ls;
-		
-		public LoginForm(String id) {
+	public class LoginForm extends Form {
+		final IModel<String> usernameModel = Model.of("");
+
+                public LoginForm(String id) {
 			super(id);
 			
 			setDefaultModel(new CompoundPropertyModel(this));
 			
-			add(new TextField("username"));
-			add(new PasswordTextField("password"));
-                        ls = new Label("loginStatus"); 
-			add(ls);
+			add(new TextField("username", usernameModel));
 		}
 
+                @Override
 		public final void onSubmit() {			
-			if(username.equals("test") && password.equals("test")) {
-				loginStatus = "Congratulations!";
-                                ls.add(AttributeModifier.replace("style", "color:green;font-weight:bold"));
-				setResponsePage(ChatPage.class);
-                        }
-                        else {
-				loginStatus = "Wrong username or password !";			
-                                ls.add(AttributeModifier.replace("style", "color:red;font-weight:bold"));
-                        }
+                        super.onSubmit();
+
+                        String username = usernameModel.getObject();
+                        SessionChat.get().setUsername(username);
+                        setResponsePage(ChatPage.class);
 		}
 	}
+
 }

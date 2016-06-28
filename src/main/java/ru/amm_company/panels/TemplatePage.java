@@ -24,7 +24,8 @@ import org.apache.wicket.markup.html.WebPage;
  * @author mam
  */
 public class TemplatePage extends WebPage {
-	public static final String CONTENT_ID = "contentComponent";
+	public static final String CONTENT_ID_1 = "contentComponent1";
+	public static final String CONTENT_ID_2 = "contentComponent2";
 
  	private Component headerPanel;
 	private Component menuPanel;
@@ -35,7 +36,8 @@ public class TemplatePage extends WebPage {
 		add(headerPanel = new HeaderPanel("headerPanel"));
 		add(menuPanel = new MenuPanel("menuPanel"));
 		add(footerPanel = new FooterPanel("footerPanel"));
-		add(new Label(CONTENT_ID, "This is test programm \"amm_webchat\""));
+		add(new Label(CONTENT_ID_1, ""));
+		add(new Label(CONTENT_ID_2, ""));
         }
 
 //getters for layout areas

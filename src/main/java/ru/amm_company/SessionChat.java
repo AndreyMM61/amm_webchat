@@ -13,12 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ru.amm_company.pages;
+package ru.amm_company;
+
+import org.apache.wicket.protocol.http.WebSession;
+import org.apache.wicket.request.Request;
 
 /**
  *
  * @author mam
  */
-public class MesssagePanel {
-    
+public class SessionChat extends WebSession {
+    private static final long serialVersionUID = 1L;
+
+    private String username;
+
+    public SessionChat(Request request) {
+        super(request);
+    }
+
+    public static SessionChat get() {
+        return (SessionChat) WebSession.get();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+   
 }

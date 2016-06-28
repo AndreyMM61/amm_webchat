@@ -15,25 +15,48 @@
  */
 package ru.amm_company.pages;
 
-import org.apache.wicket.markup.html.basic.Label;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
+import ru.amm_company.LoginPage;
+import ru.amm_company.SessionChat;
+import ru.amm_company.message.Message;
 
 /**
  *
  * @author mam
  */
 public class InputPanel extends Panel {
-	public InputPanel(String id) {
+        public MessagePanel messagePanel;
+        private static final int MAX_MESSAGES = 50;
+        static private final LinkedList<Message> messages = new LinkedList<Message>();
+        static private final List<String> users = new ArrayList<String>(); 
+
+        private MarkupContainer messagesContainer;
+
+        private String name;
+        
+	public InputPanel(String id, MessagePanel messagePanel) {
 		super(id);		
+                this.name = SessionChat.get().getUsername();
+                if (name == null) {
+                        throw new RestartResponseAtInterceptPageException(LoginPage.class);
+                }
+                this.messagePanel = messagePanel;
+                this.users.add(this.name);
 		init();
 	}
     
-	
 	private void init(){
 		Form inputForm = new InputForm("inputForm");
 		add(inputForm);
@@ -41,42 +64,50 @@ public class InputPanel extends Panel {
 
         public class InputForm extends Form {
             
-		private String textMessage;
-//		private String textMessage;
-                private TextArea message = new TextArea("message", Model.of(""));
+                final IModel<String> message = Model.of("");
                 
         public InputForm(String id) {
 			super(id);
 			
 		setDefaultModel(new CompoundPropertyModel(this));
-//		message = new TextArea("message");	
-/*		
-		add(new Link("sendMessage"){
-
-			@Override
-			public void onClick() {
-                                textMessage = "hello";
-                        }
-			
-		});
-*/
-//                add(new Label("textMessage", "Hi")); 
-                add(message);
-                add(new Label("textMessage", "Hi"));
-//                setRenderBodyOnly(true);
-/*
-                add(new Link("loginPage"){
-
-			@Override
-			public void onClick() {
-				setResponsePage(LoginPage.class);
-			}
-		});
-*/
+                add(new TextArea("message", message));
+                // Выводим имена пользователей с чате
+                String sTmp = new String();
+                for (String s: users) {
+                    sTmp += "[" + s + "]" + '\n';
+                }
+                messagePanel.messageForm.textNames.setObject(sTmp);
+                // Выводим очередь сообщений
+                sTmp = "";
+                synchronized (messages) {
+                    for (Message s: messages) {
+                        sTmp += s.getMessage();
+                    }
+                }
+                messagePanel.messageForm.textMessage.setObject(sTmp);
 	}
 
         public final void onSubmit() {
-                textMessage = message.getInput();
+                if (message.getObject() != null) {
+                    message.setObject(new SimpleDateFormat("[HH:mm:ss] ").format(new Date()) + name + ": " + message.getObject() + "\n");
+                    String sTmp = new String();
+                    synchronized (messages) {
+                        for (Message s: messages) {
+                            sTmp += s.getMessage();
+                        }
+                    }
+                    messagePanel.messageForm.textMessage.setObject(sTmp + message.getObject());
+                    Message chatMessage = new Message(name, message.getObject());
+
+                    synchronized (messages) {
+                        if (messages.size() >= MAX_MESSAGES) {
+                            messages.removeFirst();
+                        }
+
+                        messages.addLast(chatMessage);
+                    }
+                    message.setObject("");
+                }
         }			
     }
 }

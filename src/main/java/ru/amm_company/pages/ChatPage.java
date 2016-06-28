@@ -16,18 +16,19 @@
 package ru.amm_company.pages;
 
 import ru.amm_company.panels.TemplatePage;
-import static ru.amm_company.panels.TemplatePage.CONTENT_ID;
 
 /**
  *
  * @author Андрей
  */
 public class ChatPage extends TemplatePage {
+    public MessagePanel messagePanel;
     
     public ChatPage() {
         super();
-	replace(new InputPanel(CONTENT_ID));
-//	replace(new MessagePanel(CONTENT_ID));
+        messagePanel = new MessagePanel(CONTENT_ID_1);
+	replace(new InputPanel(CONTENT_ID_2, messagePanel));
+	replace(messagePanel);
 	getMenuPanel().setVisible(false);
     }
     

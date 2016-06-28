@@ -15,35 +15,42 @@
  */
 package ru.amm_company.pages;
 
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 /**
  *
  * @author mam
  */
 public class MessagePanel extends Panel {
+        MessageForm messageForm;
 	public MessagePanel(String id) {
 		super(id);		
 		init();
 	}
     
-	
 	private void init(){
-		Form messageForm = new MessageForm("messageForm");
+		messageForm = new MessageForm("messageForm");
 		add(messageForm);
 	}
 	
         public class MessageForm extends Form {
             
-//		private String message;
-//		private String textMessage;
-
+		final IModel<String> textMessage = Model.of("");
+		final IModel<String> textNames = Model.of("");
+                
         public MessageForm(String id) {
 			super(id);
 			
-			setDefaultModel(new CompoundPropertyModel(this));
+			
+		setDefaultModel(new CompoundPropertyModel(this));
+                add(new Label("textMessage", textMessage));
+                add(new Label("textNames", textNames));
         }
     }               
 }
