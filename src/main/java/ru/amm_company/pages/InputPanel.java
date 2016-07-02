@@ -20,14 +20,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
+import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.util.time.Duration;
 import ru.amm_company.LoginPage;
 import ru.amm_company.SessionChat;
 import ru.amm_company.message.Message;
@@ -38,11 +42,9 @@ import ru.amm_company.message.Message;
  */
 public class InputPanel extends Panel {
         public MessagePanel messagePanel;
-        private static final int MAX_MESSAGES = 50;
+        private static final int MAX_MESSAGES = 20;
         static private final LinkedList<Message> messages = new LinkedList<Message>();
         static private final List<String> users = new ArrayList<String>(); 
-
-        private MarkupContainer messagesContainer;
 
         private String name;
         
@@ -71,7 +73,7 @@ public class InputPanel extends Panel {
 			
 		setDefaultModel(new CompoundPropertyModel(this));
                 add(new TextArea("message", message));
-                // Выводим имена пользователей с чате
+/*                // Выводим имена пользователей с чате
                 String sTmp = new String();
                 for (String s: users) {
                     sTmp += "[" + s + "]" + '\n';
@@ -85,6 +87,30 @@ public class InputPanel extends Panel {
                     }
                 }
                 messagePanel.messageForm.textMessage.setObject(sTmp);
+*/
+                // Инициализируем таймер
+                add(new AbstractAjaxTimerBehavior(Duration.seconds(1)) {
+
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    protected void onTimer(AjaxRequestTarget target) {
+                        // Выводим имена пользователей с чате
+                        String sTmp = new String();
+                        for (String s: users) {
+                            sTmp += "[" + s + "]" + '\n';
+                        }
+                        messagePanel.messageForm.textNames.setObject(sTmp);
+                        // Выводим очередь сообщений
+                        sTmp = "";
+                        synchronized (messages) {
+                            for (Message s: messages) {
+                                sTmp += s.getMessage();
+                            }
+                        }
+                        messagePanel.messageForm.textMessage.setObject(sTmp);
+                   }
+                });
 	}
 
         public final void onSubmit() {
@@ -97,6 +123,7 @@ public class InputPanel extends Panel {
                         }
                     }
                     messagePanel.messageForm.textMessage.setObject(sTmp + message.getObject());
+
                     Message chatMessage = new Message(name, message.getObject());
 
                     synchronized (messages) {
