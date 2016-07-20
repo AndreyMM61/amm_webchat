@@ -22,14 +22,24 @@ limitations under the License.
     </head>
     <body>
 	<wicket:panel>
-            <div style="margin-left: 2em; margin-top: 5px; width: 40%;">
+            <div style="margin-left: 2em; margin-top: 5px; width: 80%;">
 		<form  id="inputForm" method="get" wicket:id="inputForm">
                     <fieldset>
                         <legend style="color: #F90">Input Messsage</legend>
-			<p>
-                            <textarea wicket:id="message" cols="38" rows="2" id="message"></textarea><br/>
+                        <p>Hi <span wicket:id="username"></span>, say something.</p>
+                        <p>
+                            <input wicket:id="message" id="message" type="text" size="80">
+                            <input type="submit" name="sendMessage" value="Send message"/>
                         </p>
-                        <input type="submit" name="sendMessage" value="Send message"/><br/> 
+                    </fieldset>
+                    <fieldset>
+                        <legend style="color: #F90">Received Messages</legend>
+                        <div wicket:id="messages">
+			<p>
+                            <textarea wicket:id="textMessage" cols="80" rows="25" readonly="readonly" disabled="disabled"></textarea>
+                            <textarea wicket:id="textNames" cols="15" rows="25"  readonly="readonly" disabled="disabled"></textarea>
+                        </p>
+                        </div>
                     </fieldset>
 		</form>
             </div>	

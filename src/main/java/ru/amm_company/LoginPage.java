@@ -22,6 +22,7 @@ import ru.amm_company.panels.TemplatePage;
  * @author mam
  */
 public class LoginPage  extends TemplatePage {
+    
     public LoginPage() {
         super();
 	replace(new LoginPanel(CONTENT_ID_1));

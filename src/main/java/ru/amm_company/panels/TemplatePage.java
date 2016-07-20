@@ -25,11 +25,10 @@ import org.apache.wicket.markup.html.WebPage;
  */
 public class TemplatePage extends WebPage {
 	public static final String CONTENT_ID_1 = "contentComponent1";
-	public static final String CONTENT_ID_2 = "contentComponent2";
 
- 	private Component headerPanel;
-	private Component menuPanel;
-	private Component footerPanel;
+ 	private final Component headerPanel;
+	private final Component menuPanel;
+	private final Component footerPanel;
 
         public TemplatePage() {
 
@@ -37,7 +36,6 @@ public class TemplatePage extends WebPage {
 		add(menuPanel = new MenuPanel("menuPanel"));
 		add(footerPanel = new FooterPanel("footerPanel"));
 		add(new Label(CONTENT_ID_1, ""));
-		add(new Label(CONTENT_ID_2, ""));
         }
 
 //getters for layout areas

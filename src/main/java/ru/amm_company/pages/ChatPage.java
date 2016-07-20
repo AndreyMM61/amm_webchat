@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Андрей.
+ * Copyright 2016 amm.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,20 @@
  */
 package ru.amm_company.pages;
 
-import ru.amm_company.panels.TemplatePage;
+import ru.amm_company.panels.*;
 
 /**
  *
- * @author Андрей
+ * @author amm
  */
+ 
 public class ChatPage extends TemplatePage {
-    public MessagePanel messagePanel;
     
     public ChatPage() {
         super();
-        messagePanel = new MessagePanel(CONTENT_ID_1);
-	replace(new InputPanel(CONTENT_ID_2, messagePanel));
-	replace(messagePanel);
-	getMenuPanel().setVisible(false);
+
+        replace(new InputPanel(CONTENT_ID_1));
+        getMenuPanel().setVisible(false);
     }
     
 }
